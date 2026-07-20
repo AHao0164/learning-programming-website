@@ -1,0 +1,54 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: coding_platform_db
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: coding_platform_backend
+    ports:
+      - "5000:5000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/ai-coding-platform
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  redis:
+    image: redis:alpine
+    container_name: coding_platform_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  frontend:
+    build: ./frontend
+    container_name: coding_platform_frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true 
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/dist
+
+volumes:
+  mongo_data:
+  redis_data:
