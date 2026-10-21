@@ -7,11 +7,23 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  piston:
+    image: ghcr.io/engineer-man/piston
+    container_name: piston_api
+    restart: always
+    privileged: true
+    ports:
+      - "2000:2000"
+    volumes:
+      - ./piston/data/piston/packages:/piston/packages
+    tmpfs:
+      - /tmp:exec
+
   backend:
     build: ./backend
     container_name: coding_platform_backend
     ports:
-      - "5000:5000"
+      - "5005:5000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
@@ -20,9 +32,11 @@ services:
       - MONGO_URI=mongodb://mongo:27017/ai-coding-platform
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - PISTON_API_URL=http://piston:2000/api/v2/execute
     depends_on:
       - mongo
       - redis
+      - piston
     volumes:
       - ./backend:/app
       - /app/node_modules

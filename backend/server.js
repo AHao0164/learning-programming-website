@@ -1,3 +1,7 @@
+const crypto = require('crypto');
+if (!globalThis.crypto) globalThis.crypto = crypto;
+if (!global.crypto) global.crypto = crypto;
+
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');

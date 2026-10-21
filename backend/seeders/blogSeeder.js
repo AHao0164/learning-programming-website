@@ -1,3 +1,7 @@
+const crypto = require('crypto');
+if (!globalThis.crypto) globalThis.crypto = crypto;
+if (!global.crypto) global.crypto = crypto;
+
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
