@@ -52,6 +52,7 @@ Desktop.ini
 # ===========================
 mongo_data/
 redis_data/
+piston/data/
 
 # ===========================
 # Misc

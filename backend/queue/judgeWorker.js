@@ -86,7 +86,8 @@ const codeJudgeWorker = new Worker('code-judging', async job => {
         try {
             response = await axios.post(LOCAL_PISTON_API, payload);
         } catch (err) {
-            throw new Error('Không thể kết nối Piston Server: ' + err.message);
+            const detail = err.response?.data?.message || err.message;
+            throw new Error('Lỗi Piston Server: ' + detail);
         }
         
         const runResult = response.data.run;
